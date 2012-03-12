@@ -23,4 +23,7 @@ fi
 (cd fixtures; sh fpm.sh)
 
 check fpm 1.8.7 1.7.2
+check insist 1.8.7 1.7.2
+check ftw 1.8.7 1.7.2
+check cabin 1.8.7 1.7.2
 
