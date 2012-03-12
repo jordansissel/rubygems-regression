@@ -34,8 +34,10 @@ gemset() {
 }
 
 build() {
-  gemspec=$1
-  gem build $gemspec
+  dir=$(dirname $1)
+  gemspec=$(basename $1)
+  find $dir -maxdepth 1 -name '*.gem' -delete
+  (cd $dir; gem build $gemspec)
 }
 
 clean() {
@@ -49,23 +51,21 @@ use 1.9.3 1.8.17
 build fixtures/fpm/fpm.gemspec
 clean
 
-# Ubuntu 11.10
+# simulate Ubuntu 11.10's defaults
 use 1.8.7 1.7.2
-#rvm install rubygems 1.7.2
-#
-# Try installing it
-#gem install --ignore-dependencies fpm.gemspec
 
 # Test it
-#ruby -rubygems -e 'gem "fpm"' 
-#result=$?
-#rvm --force gemset delete $gemset
+gem install --ignore-dependencies fixtures/fpm/fpm*.gem
+ruby -rubygems -e 'gem "fpm"' 
+result=$?
+
+clean
 
 # Make sure it installed.
-#if [ $? -ne 0 ] ; then
-  #echo "FAILED"
-#else
-  #echo "OK"
-#fi
+if [ $? -ne 0 ] ; then
+  echo "FAILED"
+else
+  echo "OK"
+fi
 
 
