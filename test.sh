@@ -19,7 +19,7 @@ fi
 . $rvmloader
 . $(dirname $0)/test.subr
 
-check fpm 1.8.7 1.7.2
-check insist 1.8.7 1.7.2
-check ftw 1.8.7 1.7.2
+#check fpm 1.8.7 1.7.2
+#check insist 1.8.7 1.7.2
+#check ftw 1.8.7 1.7.2
 check cabin 1.8.7 1.7.2

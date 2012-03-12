@@ -54,7 +54,8 @@ check() {
     use $user_rubyver $user_gemver
 
     # Test it
-    gem install --ignore-dependencies fixtures/$project/$project*.gem
+    #gem install --ignore-dependencies fixtures/$project/$project*.gem
+    gem install fixtures/$project/*.gem
     rm fixtures/$project/$project*.gem
     ruby -rubygems -e "gem '$project'" 
     result=$?
@@ -71,5 +72,6 @@ check() {
   else
     echo "OK - $project on $testenv"
   fi
+  echo "$result"
   return $result
 }
