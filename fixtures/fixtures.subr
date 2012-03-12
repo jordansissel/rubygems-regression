@@ -3,7 +3,7 @@ use() {
   dir=$(basename $url | sed -e 's/\.git$//')
 
   if [ ! -d "$dir" ] ; then
-    git clone https://github.com/jordansissel/fpm.git
+    git clone $url
   fi
 
   #(
