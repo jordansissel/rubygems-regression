@@ -1,0 +1,14 @@
+use() {
+  url=$1
+  dir=$(basename $url | sed -e 's/\.git$//')
+
+  if [ ! -d "$dir" ] ; then
+    git clone https://github.com/jordansissel/fpm.git
+  fi
+
+  #(
+    #cd $dir
+    #git fetch
+    #git reset --hard origin/master
+  #)
+}
