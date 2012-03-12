@@ -16,8 +16,7 @@ gemset() {
 build() {
   dir=$(dirname $1)
   gemspec=$(basename $1)
-  find $dir -maxdepth 1 -name '*.gem' -delete
-  (cd $dir; gem build $gemspec)
+  (cd $dir; rm -f *.gem; gem build $gemspec)
 }
 
 clean() {
