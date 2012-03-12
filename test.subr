@@ -1,0 +1,69 @@
+use() {
+  rubyver=$1
+  gemver=$2
+
+  rvm use $rubyver
+  rvm gemset create $(gemset)
+  rvm gemset use $(gemset)
+  rvm --force gemset empty $(gemset)
+  rvm install rubygems $gemver
+}
+
+gemset() {
+  echo "temp-$$"
+}
+
+build() {
+  dir=$(dirname $1)
+  gemspec=$(basename $1)
+  find $dir -maxdepth 1 -name '*.gem' -delete
+  (cd $dir; gem build $gemspec)
+}
+
+clean() {
+  rvm --force gemset delete $(gemset)
+}
+
+setup() {
+  project=$1
+  pushd fixtures
+  if [ -f "${project}.sh" ] ; then
+    sh "${project}.sh"
+  else
+    echo "No such project setup file: fixtures/${project}.sh"
+    return 1
+  end
+  popd
+}
+
+check() {
+  project=$1
+  user_rubyver=$2
+  user_gemver=$3
+
+  setup $project
+
+  use 1.9.3 1.8.18
+  build fixtures/$project/$project.gemspec
+  clean
+
+  # simulate Ubuntu 11.10's defaults
+  use $user_rubyver $user_gemver
+
+  # Test it
+  gem install --ignore-dependencies fixtures/$project/$project*.gem
+  rm fixtures/$project/$project*.gem
+  ruby -rubygems -e 'gem "$project"' 
+  result=$?
+
+  clean
+
+  testenv="ruby($(ruby -e 'puts RUBY_VERSION')) rubygems($(gem --version))"
+  # Make sure it installed.
+  if [ $result -ne 0 ] ; then
+    echo "FAILURE - $project on $testenv"
+  else
+    echo "OK - $project on $testenv"
+  fi
+  return $result
+}
