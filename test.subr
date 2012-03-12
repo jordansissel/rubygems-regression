@@ -40,22 +40,29 @@ check() {
   user_rubyver=$2
   user_gemver=$3
 
-  setup $project
+  (
+    [ ! -d log ] && mkdir log
+    exec > log/$1.$2.$3.log
+    exec 2> log/$1.$2.$3.err
+    setup $project
 
-  use 1.9.3 1.8.18
-  build fixtures/$project/$project.gemspec
-  clean
+    use 1.9.3 1.8.18
+    build fixtures/$project/$project.gemspec
+    clean
 
-  # simulate Ubuntu 11.10's defaults
-  use $user_rubyver $user_gemver
+    # simulate Ubuntu 11.10's defaults
+    use $user_rubyver $user_gemver
 
-  # Test it
-  gem install --ignore-dependencies fixtures/$project/$project*.gem
-  rm fixtures/$project/$project*.gem
-  ruby -rubygems -e "gem '$project'" 
+    # Test it
+    gem install --ignore-dependencies fixtures/$project/$project*.gem
+    rm fixtures/$project/$project*.gem
+    ruby -rubygems -e "gem '$project'" 
+    result=$?
+
+    clean
+    exit $result
+  )
   result=$?
-
-  clean
 
   testenv="ruby($(ruby -e 'puts RUBY_VERSION')) rubygems($(gem --version))"
   # Make sure it installed.
