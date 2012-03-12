@@ -53,7 +53,7 @@ check() {
   # Test it
   gem install --ignore-dependencies fixtures/$project/$project*.gem
   rm fixtures/$project/$project*.gem
-  ruby -rubygems -e 'gem "$project"' 
+  ruby -rubygems -e "gem '$project'" 
   result=$?
 
   clean
